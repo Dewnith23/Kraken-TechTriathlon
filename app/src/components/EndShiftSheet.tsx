@@ -40,9 +40,10 @@ export const EndShiftSheet: React.FC<EndShiftSheetProps> = ({
       <div
         style={{
           fontFamily:
-            '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif'
+            '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif',
+          paddingBottom: 'max(20px, calc(12px + env(safe-area-inset-bottom, 0px)))'
         }}
-        className="relative w-full max-w-[390px] mx-auto bg-surface rounded-t-[16px] border-t border-hairline p-5 pt-3 flex flex-col gap-3 shadow-2xl z-10 animate-in slide-in-from-bottom duration-200"
+        className="relative w-full max-w-[500px] mx-auto bg-surface rounded-t-[16px] border-t border-hairline p-5 pt-3 flex flex-col gap-3 shadow-2xl z-10 animate-in slide-in-from-bottom duration-200"
       >
         {/* Handle */}
         <div className="w-9 h-1 rounded-full bg-hairline mx-auto shrink-0 mb-1" />

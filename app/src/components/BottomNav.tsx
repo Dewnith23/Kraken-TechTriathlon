@@ -14,7 +14,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange, sh
   return (
     <nav
       aria-label="Bottom Navigation"
-      className="fixed bottom-0 left-0 right-0 max-w-[390px] mx-auto w-full z-50 flex justify-around items-center px-margin py-space-xs bg-surface dark:bg-inverse-surface border-t border-outline-variant dark:border-outline shadow-lg"
+      style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom, 0px))' }}
+      className="fixed bottom-0 left-0 right-0 max-w-[500px] mx-auto w-full z-50 flex justify-around items-center px-margin py-space-xs bg-surface dark:bg-inverse-surface border-t border-outline-variant dark:border-outline shadow-lg"
     >
       {/* Tab 1: Route */}
       <button

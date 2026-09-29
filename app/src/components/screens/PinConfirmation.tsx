@@ -139,7 +139,10 @@ export const PinConfirmation: React.FC = () => {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 px-4 flex flex-col justify-between pt-2 pb-6 overflow-hidden">
+      <div
+        className="flex-1 px-4 flex flex-col justify-between pt-2 overflow-hidden"
+        style={{ paddingBottom: 'max(24px, calc(16px + env(safe-area-inset-bottom, 0px)))' }}
+      >
         {/* Header Block */}
         <section aria-label="Confirm delivery header" className="w-full px-1 select-none space-y-1">
           <p className="text-[13px] text-secondary leading-tight">

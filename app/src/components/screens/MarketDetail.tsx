@@ -84,7 +84,8 @@ export const MarketDetail: React.FC = () => {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 px-4 space-y-4 pt-2 overflow-y-auto pb-4"
+        className="flex-1 px-4 space-y-4 pt-2 overflow-y-auto"
+        style={{ paddingBottom: 'max(24px, calc(16px + env(safe-area-inset-bottom, 0px)))' }}
       >
         {/* Outlet Header */}
         <section aria-label="Outlet details header" className="w-full px-1 select-none space-y-1">

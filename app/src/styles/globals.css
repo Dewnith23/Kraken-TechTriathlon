@@ -19,6 +19,12 @@
   --swipe-track: rgba(11, 20, 55, 0.08);
   --swipe-border: rgba(11, 20, 55, 0.06);
 
+  /* Safe Area Insets */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+
   /* Motion Tokens */
   --duration-micro: 120ms;
   --duration-state: 200ms;
@@ -208,4 +214,22 @@
   .screen-push-exit, .screen-pop-exit {
     animation: fadeOut 100ms var(--ease-leave) forwards !important;
   }
+}
+
+/* Global fill rules */
+html, body, #root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+}
+
+/* Safe-area utility helpers */
+.safe-top {
+  padding-top: max(12px, env(safe-area-inset-top, 0px));
+}
+
+.safe-bottom {
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
 }

@@ -17,9 +17,13 @@ export const TopBar: React.FC<TopBarProps> = ({
 }) => {
   return (
     <header
-      className={`w-full h-11 shrink-0 flex items-center justify-between px-3 bg-bg transition-colors duration-150 z-30 select-none ${
+      className={`w-full shrink-0 flex items-center justify-between px-3 bg-bg transition-colors duration-150 z-30 select-none ${
         isScrolled ? 'border-b-[0.5px] border-hairline' : 'border-b-[0.5px] border-transparent'
       }`}
+      style={{
+        paddingTop: 'env(safe-area-inset-top, 0px)',
+        height: 'calc(44px + env(safe-area-inset-top, 0px))'
+      }}
     >
       <div className="w-16 flex items-center">
         {showBackButton && onBack ? (

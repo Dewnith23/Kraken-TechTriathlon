@@ -93,7 +93,10 @@ export const RouteDashboard: React.FC = () => {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 px-4 overflow-y-auto space-y-4 pt-1 pb-8">
+      <div
+        className="flex-1 px-4 overflow-y-auto space-y-4 pt-1"
+        style={{ paddingBottom: 'max(32px, calc(16px + env(safe-area-inset-bottom, 0px)))' }}
+      >
         {/* Route Header (Entrance stagger: 0ms) */}
         <section
           aria-label="Route Overview Header"

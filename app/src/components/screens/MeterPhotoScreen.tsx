@@ -250,7 +250,12 @@ export const MeterPhotoScreen: React.FC<MeterPhotoScreenProps> = ({ moment }) =>
       />
 
       {/* Main Content Area: Centered column scaling smoothly to tablet */}
-      <div className="flex-1 w-full max-w-[390px] mx-auto px-5 flex flex-col justify-between pt-2 pb-8 overflow-y-auto">
+      <div
+        className="flex-1 w-full max-w-[500px] mx-auto px-5 flex flex-col justify-between pt-2 overflow-y-auto"
+        style={{
+          paddingBottom: 'max(32px, calc(16px + env(safe-area-inset-bottom, 0px)))'
+        }}
+      >
         {/* Header Block */}
         <section aria-label="Meter photo instructions" className="w-full space-y-1 pt-1 select-none">
           <p className="text-[13px] font-medium text-secondary tracking-tight">

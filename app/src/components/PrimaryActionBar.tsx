@@ -31,13 +31,14 @@ export const PrimaryActionBar: React.FC<PrimaryActionBarProps> = ({
     <footer
       style={{
         fontFamily:
-          '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif'
+          '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif',
+        paddingBottom: 'max(28px, calc(16px + env(safe-area-inset-bottom, 0px)))'
       }}
-      className={`w-full bg-bg shrink-0 px-4 pt-3 pb-8 transition-colors duration-150 select-none z-30 ${
+      className={`w-full bg-bg shrink-0 px-4 pt-3 transition-colors duration-150 select-none z-30 ${
         isScrolled ? 'border-t-[0.5px] border-hairline' : 'border-t-[0.5px] border-transparent'
       }`}
     >
-      <div className="w-full max-w-[390px] mx-auto">
+      <div className="w-full max-w-[500px] mx-auto">
         {isComplete ? (
           <div className="w-full flex flex-col items-center">
             {/* Enabled button: solid accent fill, white text, 56px tall, 8px radius, 200ms fade + ring pulse */}

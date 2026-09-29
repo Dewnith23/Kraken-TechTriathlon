@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#F5F7FB" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0B1437" media="(prefers-color-scheme: dark)" />
   <title>WayLink Fleet Logistics — Driver Terminal</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -184,16 +186,18 @@
       user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
-    body {
+    html, body {
       margin: 0;
       padding: 0;
-      background-color: #0f1115;
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
   </style>
 </head>
-<body class="bg-[#0f1115] text-[#191c1d] antialiased flex justify-center items-center min-h-screen">
-  <div id="root" class="w-full flex justify-center"></div>
+<body class="bg-bg text-primary antialiased w-full min-h-screen">
+  <div id="root" class="w-full min-h-screen"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>

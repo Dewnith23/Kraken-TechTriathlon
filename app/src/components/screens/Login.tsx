@@ -456,8 +456,11 @@ export const Login: React.FC = () => {
       {/* Footer Area with Inspection & SwipeBar */}
       {loginStage === 'stageB' && (
         <footer
-          className="w-full bg-surface border-t border-hairline pt-2.5 pb-6 flex flex-col gap-2 shrink-0 animate-row-enter z-20"
-          style={{ animationDelay: '80ms' }}
+          className="w-full bg-surface border-t border-hairline pt-2.5 flex flex-col gap-2 shrink-0 animate-row-enter z-20"
+          style={{
+            animationDelay: '80ms',
+            paddingBottom: 'max(24px, calc(10px + env(safe-area-inset-bottom, 0px)))'
+          }}
         >
           <div className="flex items-center justify-between text-[13px] px-5">
             <span className="flex items-center gap-1.5 text-secondary">

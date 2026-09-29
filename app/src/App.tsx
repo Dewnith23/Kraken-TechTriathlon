@@ -29,13 +29,14 @@ const PrototypeCanvas: React.FC = () => {
   const isMapScreen = currentScreen === 'map';
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen w-full bg-[#0f1115] py-0 sm:py-6 selection:bg-primary-container">
-      {/* Viewport: expands to 1180px on tablet/desktop for Map screen, 390px for phone screens */}
+    <div className="relative flex items-center justify-center min-h-[100vh] min-h-[100dvh] w-full bg-bg py-0 sm:py-6 selection:bg-primary-container">
+      {/* Viewport: on phones (< sm / 640px) fills 100% width and height edge-to-edge.
+          On desktop / tablet (sm: and above) centers as preview container (max-w-[440px] or max-w-[1180px] for map). */}
       <div
-        className={`w-full transition-all duration-300 overflow-hidden shadow-2xl relative bg-background border border-neutral-800 flex flex-col justify-between ${
+        className={`w-full transition-all duration-300 overflow-hidden relative bg-bg flex flex-col justify-between ${
           isMapScreen
-            ? 'max-w-[1180px] h-[100dvh] sm:h-[844px] sm:rounded-[32px]'
-            : 'max-w-[390px] h-[844px] max-h-[100dvh] sm:rounded-[36px]'
+            ? 'w-full max-w-[1180px] h-[100vh] h-[100dvh] sm:h-[844px] sm:rounded-[32px] sm:border sm:border-hairline sm:shadow-2xl'
+            : 'w-full h-[100vh] h-[100dvh] sm:h-[844px] sm:max-w-[440px] sm:rounded-[36px] sm:border sm:border-hairline sm:shadow-2xl'
         }`}
         style={{
           fontFamily:

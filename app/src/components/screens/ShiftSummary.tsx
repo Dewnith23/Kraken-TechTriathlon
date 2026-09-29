@@ -222,9 +222,12 @@ export const ShiftSummary: React.FC = () => {
 
       {/* 7. Bottom Bar pinned above bottom safe area */}
       <footer
-        className={`w-full max-w-[390px] absolute bottom-0 left-0 right-0 mx-auto bg-bg px-4 pt-3 pb-7 flex flex-col gap-2 z-30 transition-all ${
+        className={`w-full max-w-[500px] absolute bottom-0 left-0 right-0 mx-auto bg-bg px-4 pt-3 flex flex-col gap-2 z-30 transition-all ${
           isScrolled ? 'border-t border-hairline' : 'border-t border-transparent'
         }`}
+        style={{
+          paddingBottom: 'max(28px, calc(16px + env(safe-area-inset-bottom, 0px)))'
+        }}
       >
         {otherRoutesRemain ? (
           <>
