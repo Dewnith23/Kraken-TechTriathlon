@@ -107,12 +107,57 @@ export interface StoreContextType {
   jumpToScreen: (screen: ScreenName) => void;
 }
 
+export const getLogicalStackForScreen = (screen: ScreenName): ScreenName[] => {
+  switch (screen) {
+    case 'login':
+      return ['login'];
+    case 'meter_photo_start':
+      return ['login', 'meter_photo_start'];
+    case 'dashboard':
+      return ['login', 'dashboard'];
+    case 'market_detail':
+      return ['login', 'dashboard', 'market_detail'];
+    case 'pin_confirmation':
+      return ['login', 'dashboard', 'market_detail', 'pin_confirmation'];
+    case 'meter_photo_end':
+      return ['login', 'dashboard', 'meter_photo_end'];
+    case 'map':
+      return ['login', 'dashboard', 'map'];
+    case 'shift_summary':
+      return ['login', 'dashboard', 'shift_summary'];
+    default:
+      return ['login'];
+  }
+};
+
+export const getFallbackPrevScreen = (current: ScreenName, returnTo: 'dashboard' | 'map'): ScreenName => {
+  switch (current) {
+    case 'map':
+      return 'dashboard';
+    case 'market_detail':
+      return returnTo === 'map' ? 'map' : 'dashboard';
+    case 'pin_confirmation':
+      return returnTo === 'map' ? 'map' : 'market_detail';
+    case 'meter_photo_start':
+      return 'login';
+    case 'meter_photo_end':
+      return returnTo === 'map' ? 'map' : 'dashboard';
+    case 'shift_summary':
+      return 'dashboard';
+    case 'dashboard':
+      return 'login';
+    case 'login':
+    default:
+      return 'login';
+  }
+};
+
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
 export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // Navigation
-  const [currentScreen, setCurrentScreen] = useState<ScreenName>('login');
   const [historyStack, setHistoryStack] = useState<ScreenName[]>(['login']);
+  const currentScreen: ScreenName = historyStack[historyStack.length - 1] || 'login';
   const [transitionType, setTransitionType] = useState<TransitionType>('replace');
   const [returnTo, setReturnTo] = useState<'dashboard' | 'map'>('dashboard');
   const [loginStage, setLoginStage] = useState<'stageA' | 'stageB'>('stageA');
@@ -180,21 +225,28 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const pushScreen = useCallback((screen: ScreenName) => {
     setTransitionType('push');
     setHistoryStack((prev) => [...prev, screen]);
-    setCurrentScreen(screen);
   }, []);
 
   const popScreen = useCallback(() => {
     track('G03');
     setTransitionType('pop');
     setHistoryStack((prev) => {
-      if (prev.length <= 1) return prev;
-      const nextStack = [...prev];
-      nextStack.pop();
-      const prevScreen = nextStack[nextStack.length - 1];
-      setCurrentScreen(prevScreen);
+      let nextStack: ScreenName[];
+      if (prev.length > 1) {
+        nextStack = prev.slice(0, -1);
+      } else {
+        const current = prev[0] || 'login';
+        const fallback = getFallbackPrevScreen(current, returnTo);
+        nextStack = getLogicalStackForScreen(fallback);
+      }
+
+      const target = nextStack[nextStack.length - 1];
+      if (target === 'login') {
+        setLoginStage('stageB');
+      }
       return nextStack;
     });
-  }, [track]);
+  }, [track, returnTo]);
 
   const replaceScreen = useCallback((screen: ScreenName) => {
     setTransitionType('replace');
@@ -204,7 +256,6 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       else next.push(screen);
       return next;
     });
-    setCurrentScreen(screen);
   }, []);
 
   const selectRoute = useCallback((id: number | null) => {
@@ -465,7 +516,6 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setActiveOutletId(null);
     setSelectedMapOutletId(null);
     setLoginStage('stageA');
-    setCurrentScreen('login');
     setHistoryStack(['login']);
     setTransitionType('replace');
     setConditions({
@@ -481,8 +531,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const jumpToScreen = useCallback((screen: ScreenName) => {
     setTransitionType('replace');
-    setHistoryStack([screen]);
-    setCurrentScreen(screen);
+    setHistoryStack(getLogicalStackForScreen(screen));
 
     // Seed sensible mock state for target screen
     if (screen === 'login') {

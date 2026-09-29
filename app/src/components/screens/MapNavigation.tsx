@@ -29,6 +29,8 @@ export const MapNavigation: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Pan & Zoom state for interactive vector map
+  const MIN_ZOOM = 0.6;
+  const MAX_ZOOM = 2.5;
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -195,7 +197,7 @@ export const MapNavigation: React.FC = () => {
         e.touches[0].clientY - e.touches[1].clientY
       );
       const factor = dist / touchStartDistRef.current;
-      setZoom((prev) => Math.max(0.65, Math.min(prev * factor, 2.6)));
+      setZoom((prev) => Math.max(MIN_ZOOM, Math.min(prev * factor, MAX_ZOOM)));
       touchStartDistRef.current = dist;
     }
   };
@@ -209,7 +211,7 @@ export const MapNavigation: React.FC = () => {
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     const factor = e.deltaY < 0 ? 1.12 : 0.89;
-    setZoom((prev) => Math.max(0.6, Math.min(prev * factor, 2.5)));
+    setZoom((prev) => Math.max(MIN_ZOOM, Math.min(prev * factor, MAX_ZOOM)));
   };
 
   // Actions
@@ -241,12 +243,17 @@ export const MapNavigation: React.FC = () => {
     showToast('Map centered to full route');
   };
 
+  const canZoomIn = zoom < MAX_ZOOM - 0.005;
+  const canZoomOut = zoom > MIN_ZOOM + 0.005;
+
   const handleZoomIn = () => {
-    setZoom((z) => Math.min(z * 1.25, 2.5));
+    if (!canZoomIn) return;
+    setZoom((z) => Math.min(z * 1.25, MAX_ZOOM));
   };
 
   const handleZoomOut = () => {
-    setZoom((z) => Math.max(z * 0.8, 0.6));
+    if (!canZoomOut) return;
+    setZoom((z) => Math.max(z * 0.8, MIN_ZOOM));
   };
 
   const handleTurnOnGps = (e?: React.MouseEvent) => {
@@ -293,9 +300,9 @@ export const MapNavigation: React.FC = () => {
     conditions.gpsQuality === 'weak';
 
   return (
-    <div className="w-full h-full flex flex-col md:flex-row relative overflow-hidden bg-bg select-none">
-      {/* 1. Mobile TopBar (44px) */}
-      <div className="md:hidden w-full shrink-0 z-20">
+    <div className="w-full h-full flex flex-col relative overflow-hidden bg-bg select-none">
+      {/* 1. TopBar (44px) */}
+      <div className="w-full shrink-0 z-20">
         <TopBar
           title="Fleet Logistics"
           showBackButton={true}
@@ -599,18 +606,42 @@ export const MapNavigation: React.FC = () => {
             <button
               type="button"
               onClick={handleZoomIn}
+              disabled={!canZoomIn}
               aria-label="Zoom in"
-              className="w-11 h-11 flex items-center justify-center text-text-primary hover:bg-hairline/20 active:scale-95 transition-transform cursor-pointer border-b border-hairline/50 focus:outline-none"
+              className={`w-11 h-11 flex items-center justify-center border-b border-hairline/50 focus:outline-none transition-all ${
+                !canZoomIn
+                  ? 'cursor-not-allowed'
+                  : 'text-text-primary hover:bg-hairline/20 active:scale-95 cursor-pointer'
+              }`}
             >
-              <span className="material-symbols-outlined text-[20px]">add</span>
+              <span
+                style={!canZoomIn ? { filter: 'blur(1.5px)' } : undefined}
+                className={`material-symbols-outlined text-[20px] transition-all select-none ${
+                  !canZoomIn ? 'blur-[1.5px] opacity-35 text-secondary' : 'text-text-primary'
+                }`}
+              >
+                add
+              </span>
             </button>
             <button
               type="button"
               onClick={handleZoomOut}
+              disabled={!canZoomOut}
               aria-label="Zoom out"
-              className="w-11 h-11 flex items-center justify-center text-text-primary hover:bg-hairline/20 active:scale-95 transition-transform cursor-pointer focus:outline-none"
+              className={`w-11 h-11 flex items-center justify-center focus:outline-none transition-all ${
+                !canZoomOut
+                  ? 'cursor-not-allowed'
+                  : 'text-text-primary hover:bg-hairline/20 active:scale-95 cursor-pointer'
+              }`}
             >
-              <span className="material-symbols-outlined text-[20px]">remove</span>
+              <span
+                style={!canZoomOut ? { filter: 'blur(1.5px)' } : undefined}
+                className={`material-symbols-outlined text-[20px] transition-all select-none ${
+                  !canZoomOut ? 'blur-[1.5px] opacity-35 text-secondary' : 'text-text-primary'
+                }`}
+              >
+                remove
+              </span>
             </button>
           </div>
 

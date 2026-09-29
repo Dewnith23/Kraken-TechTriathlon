@@ -25,13 +25,16 @@ export const TopBar: React.FC<TopBarProps> = ({
         height: 'calc(44px + env(safe-area-inset-top, 0px))'
       }}
     >
-      <div className="w-16 flex items-center">
+      <div className="min-w-[72px] shrink-0 flex items-center">
         {showBackButton && onBack ? (
           <button
             type="button"
-            onClick={onBack}
+            onClick={(e) => {
+              e.stopPropagation();
+              onBack();
+            }}
             aria-label="Back"
-            className="inline-flex items-center gap-0.5 text-black dark:text-white hover:opacity-70 active:scale-95 transition-all focus:outline-none py-1 -ml-1 cursor-pointer"
+            className="inline-flex items-center gap-0.5 text-black dark:text-white hover:opacity-70 active:scale-95 transition-all focus:outline-none py-1 -ml-1 cursor-pointer select-none"
           >
             <span className="material-symbols-outlined text-[24px] leading-none">chevron_left</span>
             <span className="text-[17px] font-normal leading-none -ml-0.5">Back</span>
@@ -41,11 +44,11 @@ export const TopBar: React.FC<TopBarProps> = ({
         )}
       </div>
 
-      <h1 className="text-[17px] font-semibold text-black dark:text-white tracking-tight text-center truncate flex-1">
+      <h1 className="text-[17px] font-semibold text-black dark:text-white tracking-tight text-center truncate flex-1 pointer-events-none">
         {title}
       </h1>
 
-      <div className="w-16" />
+      <div className="min-w-[72px] shrink-0" />
     </header>
   );
 };

@@ -67,9 +67,7 @@ export const MeterPhotoScreen: React.FC<MeterPhotoScreenProps> = ({ moment }) =>
   }, []);
 
   const handleBack = () => {
-    if (moment === 'start') {
-      popScreen();
-    }
+    popScreen();
   };
 
   const clearCurrentPhoto = useCallback(() => {
@@ -226,7 +224,7 @@ export const MeterPhotoScreen: React.FC<MeterPhotoScreenProps> = ({ moment }) =>
       {/* 1. Quiet TopBar */}
       <TopBar
         title="Fleet Logistics"
-        showBackButton={isStart && state === 'empty'}
+        showBackButton={state !== 'processing'}
         onBack={handleBack}
       />
 
