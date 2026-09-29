@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Production build outputs
+dist/
+**/dist/
+build/
+*.local
+
+# Environment and local configs
+.env
+.env.local
+.env.*.local
+*.env
+
+# Cache and temporary directories
+.cache/
+.parcel-cache/
+.vite/
+**/node_modules/.vite/
+scratch/
+tmp/
+temp/
+
+# Editor and OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Documentation and audit drafts
+DRIVER_AUDIT*
+WayLink_Driver_System_Documentation*
