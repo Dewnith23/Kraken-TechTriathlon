@@ -13,8 +13,10 @@ export const PinConfirmation: React.FC = () => {
     replaceScreen,
     popScreen,
     pushScreen,
+    returnTo,
     conditions,
     showToast,
+    meterPhotos,
     track
   } = useStore();
 
@@ -77,21 +79,34 @@ export const PinConfirmation: React.FC = () => {
       setIsVerifying(false);
 
       if (enteredPin === '4821') {
+        const isLastOutlet =
+          selectedRoute.outlets[selectedRoute.outlets.length - 1]?.id === activeOutlet.id ||
+          activeOutlet.visitOrder === selectedRoute.outlets.length ||
+          selectedRoute.outlets.filter((o) => o.id !== activeOutlet.id).every((o) => o.status === 'completed');
+
+        const onAdvance = () => {
+          if (isLastOutlet) {
+            if (meterPhotos[selectedRoute.id]?.end) {
+              replaceScreen('shift_summary');
+            } else {
+              replaceScreen('meter_photo_end');
+            }
+          } else {
+            replaceScreen(returnTo === 'map' ? 'map' : 'dashboard');
+          }
+        };
+
         // P05 or P06 Offline saved
         if (conditions.nextPinResult === 'offline-saved' || conditions.networkStatus === 'offline') {
           setIsOfflineSaved(true);
           completeOutlet(activeOutlet.id, true);
           track('P06');
-          setTimeout(() => {
-            replaceScreen('shift_summary');
-          }, 1500);
+          setTimeout(onAdvance, 1500);
         } else {
           setIsSuccess(true);
           completeOutlet(activeOutlet.id, false);
           track('P05');
-          setTimeout(() => {
-            replaceScreen('shift_summary');
-          }, 1500);
+          setTimeout(onAdvance, 1500);
         }
       } else {
         // Wrong PIN

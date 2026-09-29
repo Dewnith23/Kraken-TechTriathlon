@@ -21,16 +21,17 @@ export const Login: React.FC = () => {
     conditions,
     updateCondition,
     showToast,
+    meterPhotos,
     track
   } = useStore();
 
-  const [phone, setPhone] = useState('5550192834');
+  const [phone, setPhone] = useState('77 123 4567');
   const [code, setCode] = useState('482100');
   const [codeError, setCodeError] = useState(false);
   const [isLocatingGps, setIsLocatingGps] = useState(false);
 
   // L01 Validation: phone digits and 6 code digits
-  const isPhoneComplete = phone.replace(/\D/g, '').length >= 10;
+  const isPhoneComplete = phone.replace(/\D/g, '').length >= 9;
   const isCodeComplete = code.length === 6;
   const canSignIn = isPhoneComplete && isCodeComplete;
 
@@ -74,14 +75,16 @@ export const Login: React.FC = () => {
 
   const handleSwipeComplete = () => {
     track('L09');
-    if (selectedRouteId) {
-      startRoute(selectedRouteId);
-    } else if (inProgressRoute) {
-      startRoute(inProgressRoute.id);
-    } else if (routes[0]) {
-      startRoute(routes[0].id);
+    const targetRouteId = selectedRouteId || inProgressRoute?.id || routes[0]?.id;
+    if (targetRouteId) {
+      startRoute(targetRouteId);
     }
-    pushScreen('dashboard');
+
+    if (targetRouteId && meterPhotos[targetRouteId]?.start) {
+      pushScreen('dashboard');
+    } else {
+      pushScreen('meter_photo_start');
+    }
   };
 
   // Date formatted for Apple style: "Monday, Sep 28"
@@ -126,14 +129,14 @@ export const Login: React.FC = () => {
                 </label>
                 <div className="flex items-center h-12 w-full rounded-xl border border-hairline bg-surface px-3">
                   <div className="flex items-center gap-1.5 pr-2.5 mr-2.5 border-r border-hairline text-black dark:text-white text-[15px] font-medium">
-                    <span>🇺🇸</span>
-                    <span>+1</span>
+                    <span>🇱🇰</span>
+                    <span>+94</span>
                   </div>
                   <input
                     type="tel"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-                    placeholder="Mobile number"
+                    onChange={(e) => setPhone(e.target.value.replace(/[^0-9 ]/g, ''))}
+                    placeholder="77 123 4567"
                     className="w-full bg-transparent border-0 p-0 text-black dark:text-white text-[15px] font-medium tracking-wide focus:outline-none font-mono tabular-nums"
                   />
                   {isPhoneComplete && (

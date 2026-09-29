@@ -8,8 +8,8 @@ import { MarketDetail } from './components/screens/MarketDetail';
 import { PinConfirmation } from './components/screens/PinConfirmation';
 import { MapNavigation } from './components/screens/MapNavigation';
 import { ShiftSummary } from './components/screens/ShiftSummary';
+import { MeterPhotoScreen } from './components/screens/MeterPhotoScreen';
 import { Toast } from './components/shared/Toast';
-import { PrototypePanel } from './components/prototype/PrototypePanel';
 import './styles/globals.css';
 
 const PrototypeCanvas: React.FC = () => {
@@ -26,11 +26,17 @@ const PrototypeCanvas: React.FC = () => {
     return 'screen-replace-enter';
   };
 
+  const isMapScreen = currentScreen === 'map';
+
   return (
-    <div className="relative flex flex-col lg:flex-row items-center justify-center min-h-screen w-full bg-[#0f1115] py-0 sm:py-6 selection:bg-primary-container gap-6">
-      {/* 390px x 844px Mobile Phone Viewport (NO bezel, NO notch, NO fake status bar) */}
+    <div className="relative flex items-center justify-center min-h-screen w-full bg-[#0f1115] py-0 sm:py-6 selection:bg-primary-container">
+      {/* Viewport: expands to 1180px on tablet/desktop for Map screen, 390px for phone screens */}
       <div
-        className="w-full max-w-[390px] h-[844px] max-h-[100dvh] sm:rounded-[36px] overflow-hidden shadow-2xl relative bg-background border border-neutral-800 flex flex-col justify-between"
+        className={`w-full transition-all duration-300 overflow-hidden shadow-2xl relative bg-background border border-neutral-800 flex flex-col justify-between ${
+          isMapScreen
+            ? 'max-w-[1180px] h-[100dvh] sm:h-[844px] sm:rounded-[32px]'
+            : 'max-w-[390px] h-[844px] max-h-[100dvh] sm:rounded-[36px]'
+        }`}
         style={{
           fontFamily:
             '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif'
@@ -39,9 +45,11 @@ const PrototypeCanvas: React.FC = () => {
         {/* Animated screen container */}
         <div key={currentScreen} className={`w-full h-full ${getTransitionClass()}`}>
           {currentScreen === 'login' && <Login />}
+          {currentScreen === 'meter_photo_start' && <MeterPhotoScreen moment="start" />}
           {currentScreen === 'dashboard' && <RouteDashboard />}
           {currentScreen === 'market_detail' && <MarketDetail />}
           {currentScreen === 'pin_confirmation' && <PinConfirmation />}
+          {currentScreen === 'meter_photo_end' && <MeterPhotoScreen moment="end" />}
           {currentScreen === 'map' && <MapNavigation />}
           {currentScreen === 'shift_summary' && <ShiftSummary />}
         </div>
@@ -49,9 +57,6 @@ const PrototypeCanvas: React.FC = () => {
         {/* 36px In-App Toast (The ONLY new element inside phone) */}
         <Toast message={toastMessage} />
       </div>
-
-      {/* Outside Prototype Control Panel (Outside phone, visible only when >= 900px) */}
-      <PrototypePanel />
 
       {/* Floating Figma Make Screen Switcher Dock (discreet bar for prototype testing) */}
       <div className="fixed bottom-2 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 px-3 py-1.5 bg-neutral-900/90 text-neutral-300 rounded-full text-[11px] backdrop-blur-md border border-neutral-700 shadow-xl select-none">
@@ -66,6 +71,15 @@ const PrototypeCanvas: React.FC = () => {
           }`}
         >
           1. Login
+        </button>
+        <button
+          type="button"
+          onClick={() => jumpToScreen('meter_photo_start')}
+          className={`px-2 py-0.5 rounded-full transition-colors cursor-pointer ${
+            currentScreen === 'meter_photo_start' ? 'bg-primary text-white font-bold' : 'hover:bg-neutral-800'
+          }`}
+        >
+          Start Meter
         </button>
         <button
           type="button"
@@ -93,6 +107,15 @@ const PrototypeCanvas: React.FC = () => {
           }`}
         >
           4. PIN
+        </button>
+        <button
+          type="button"
+          onClick={() => jumpToScreen('meter_photo_end')}
+          className={`px-2 py-0.5 rounded-full transition-colors cursor-pointer ${
+            currentScreen === 'meter_photo_end' ? 'bg-primary text-white font-bold' : 'hover:bg-neutral-800'
+          }`}
+        >
+          End Meter
         </button>
         <button
           type="button"

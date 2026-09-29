@@ -5,11 +5,25 @@ import { RoutePlan, Outlet, createInitialRoutes, CANONICAL_DRIVER, DriverProfile
 
 export type ScreenName =
   | 'login'
+  | 'meter_photo_start'
   | 'dashboard'
   | 'market_detail'
   | 'pin_confirmation'
+  | 'meter_photo_end'
   | 'map'
   | 'shift_summary';
+
+export interface MeterPhotoRecord {
+  photoUri: string;
+  capturedAt: string;
+  rawFile?: File;
+  syncStatus: 'synced' | 'pending';
+}
+
+export interface RouteMeterPhotos {
+  start?: MeterPhotoRecord;
+  end?: MeterPhotoRecord;
+}
 
 export type TransitionType = 'push' | 'pop' | 'replace';
 
@@ -61,6 +75,11 @@ export interface StoreContextType {
   syncPendingOutlets: () => Promise<void>;
   isSyncing: boolean;
 
+  // Meter Photos
+  meterPhotos: Record<number, RouteMeterPhotos>;
+  setRouteMeterPhoto: (routeId: number, moment: 'start' | 'end', record: MeterPhotoRecord) => void;
+  clearRouteMeterPhotos: (routeId: number) => void;
+
   // Conditions (Panel controlled)
   conditions: PrototypeConditions;
   setConditions: React.Dispatch<React.SetStateAction<PrototypeConditions>>;
@@ -109,6 +128,25 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [activeOutletId, setActiveOutletId] = useState<string | null>(null);
   const [selectedMapOutletId, setSelectedMapOutletId] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
+  const [meterPhotos, setMeterPhotos] = useState<Record<number, RouteMeterPhotos>>({});
+
+  const setRouteMeterPhoto = useCallback((routeId: number, moment: 'start' | 'end', record: MeterPhotoRecord) => {
+    setMeterPhotos((prev) => ({
+      ...prev,
+      [routeId]: {
+        ...prev[routeId],
+        [moment]: record
+      }
+    }));
+  }, []);
+
+  const clearRouteMeterPhotos = useCallback((routeId: number) => {
+    setMeterPhotos((prev) => {
+      const next = { ...prev };
+      delete next[routeId];
+      return next;
+    });
+  }, []);
 
   // Conditions
   const [conditions, setConditions] = useState<PrototypeConditions>({
@@ -284,6 +322,16 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         outlets: r.outlets.map((o) => ({ ...o, syncStatus: 'synced' }))
       }))
     );
+    setMeterPhotos((prev) => {
+      const next: Record<number, RouteMeterPhotos> = {};
+      for (const [rId, photos] of Object.entries(prev)) {
+        next[Number(rId)] = {
+          start: photos.start ? { ...photos.start, syncStatus: 'synced' } : undefined,
+          end: photos.end ? { ...photos.end, syncStatus: 'synced' } : undefined
+        };
+      }
+      return next;
+    });
     setIsSyncing(false);
   }, [track]);
 
@@ -427,6 +475,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       driverNearNextOutlet: false,
       nextPinResult: 'normal'
     });
+    setMeterPhotos({});
     setTrackedFunctions({ G01: true });
   }, []);
 
@@ -439,6 +488,9 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (screen === 'login') {
       setLoginStage('stageB');
       setSelectedRouteId(null);
+    } else if (screen === 'meter_photo_start') {
+      setSelectedRouteId(1);
+      setLoginStage('stageB');
     } else if (screen === 'dashboard') {
       setSelectedRouteId(1);
       setLoginStage('stageB');
@@ -473,6 +525,21 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     } else if (screen === 'map') {
       setSelectedRouteId(2);
       setSelectedMapOutletId(null);
+    } else if (screen === 'meter_photo_end') {
+      setSelectedRouteId(2);
+      setRoutes((prev) =>
+        prev.map((r) => {
+          if (r.id === 2 || r.routeNumber === 2) {
+            return {
+              ...r,
+              status: 'in_progress',
+              startedAt: '05:12',
+              distanceKm: 42
+            };
+          }
+          return r;
+        })
+      );
     } else if (screen === 'shift_summary') {
       setSelectedRouteId(2);
       setRoutes((prev) =>
@@ -529,6 +596,9 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         completeOutlet,
         syncPendingOutlets,
         isSyncing,
+        meterPhotos,
+        setRouteMeterPhoto,
+        clearRouteMeterPhotos,
         conditions,
         setConditions,
         updateCondition,
